@@ -1,8 +1,8 @@
 {
   "name": "worker",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "A NestJS application implementing Domain-Driven Design (DDD) architecture for email processing with queue management.",
+  "author": "Santiago Granada",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
