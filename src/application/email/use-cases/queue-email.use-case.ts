@@ -5,6 +5,7 @@ import type { EmailRepository } from '../../../domain/email/repositories/email.r
 import { Email, EmailId } from '../../../domain/email/entities/email.entity';
 import { EmailAddress } from '../../../domain/email/value-objects/email-address';
 import { EmailContent } from '../../../domain/email/value-objects/email-content';
+import { IdGenerator } from '../../../shared/helpers/id-generator.helper';
 
 export interface QueueEmailCommand {
   from: string;
@@ -27,7 +28,7 @@ export class QueueEmailUseCase {
 
   async execute(command: QueueEmailCommand): Promise<EmailId> {
     // Create email entity and save to repository
-    const emailId: EmailId = { value: this.generateId() };
+    const emailId: EmailId = { value: IdGenerator.generateEmailId() };
     const from = new EmailAddress(command.from);
     const to = new EmailAddress(command.to);
     const content = new EmailContent(
@@ -56,9 +57,5 @@ export class QueueEmailUseCase {
     });
 
     return emailId;
-  }
-
-  private generateId(): string {
-    return `email_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 }

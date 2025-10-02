@@ -3,16 +3,19 @@ import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { SendEmailUseCase } from './application/email/use-cases/send-email.use-case';
 
-export interface EmailJobData {
+export type EmailJobType = 'domain-email';
+
+export interface DomainEmailJobData {
   type: 'domain-email';
   to: string;
-  subject?: string;
-  // For domain email jobs
-  emailId?: string;
-  from?: string;
-  textContent?: string;
+  subject: string;
+  emailId: string;
+  from: string;
+  textContent: string;
   htmlContent?: string;
 }
+
+export type EmailJobData = DomainEmailJobData;
 
 @Processor('email-queue')
 export class EmailProcessor extends WorkerHost {
@@ -26,30 +29,17 @@ export class EmailProcessor extends WorkerHost {
     this.logger.log(`Processing email job ${job.id} for ${job.data.to}`);
 
     try {
-      switch (job.data.type) {
-        case 'domain-email':
-          if (
-            !job.data.from ||
-            !job.data.to ||
-            !job.data.subject ||
-            !job.data.textContent
-          ) {
-            throw new Error(
-              'From, to, subject, and textContent are required for domain email',
-            );
-          }
-          await this.sendEmailUseCase.execute({
-            from: job.data.from,
-            to: job.data.to,
-            subject: job.data.subject,
-            textContent: job.data.textContent,
-            htmlContent: job.data.htmlContent,
-          });
-          break;
-
-        default:
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          throw new Error(`Unknown email type: ${(job.data as any).type}`);
+      if (job.data.type === 'domain-email') {
+        await this.sendEmailUseCase.execute({
+          from: job.data.from,
+          to: job.data.to,
+          subject: job.data.subject,
+          textContent: job.data.textContent,
+          htmlContent: job.data.htmlContent,
+        });
+      } else {
+        // This should never happen with proper typing
+        throw new Error(`Unknown email type: ${JSON.stringify(job.data)}`);
       }
 
       this.logger.log(`Email job ${job.id} completed successfully`);
