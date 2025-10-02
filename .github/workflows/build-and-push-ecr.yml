@@ -1,7 +1,7 @@
 name: build-and-push-ecr
 on:
   push:
-    branches: [ main, production ]
+    branches: [ main, develop ]
 
 permissions:
   id-token: write
