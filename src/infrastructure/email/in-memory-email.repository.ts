@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { EmailRepository } from '../../domain/email/repositories/email.repository';
+import { EmailWriteRepository } from '../../domain/email/repositories/email-write.repository';
+import { EmailQueryRepository } from '../../domain/email/repositories/email-query.repository';
 import { Email, EmailId } from '../../domain/email/entities/email.entity';
 import { EmailAddress } from '../../domain/email/value-objects/email-address';
 
 @Injectable()
-export class InMemoryEmailRepository implements EmailRepository {
+export class InMemoryEmailRepository
+  implements EmailRepository, EmailWriteRepository, EmailQueryRepository
+{
   private emails: Map<string, Email> = new Map();
 
   save(email: Email): Promise<void> {
