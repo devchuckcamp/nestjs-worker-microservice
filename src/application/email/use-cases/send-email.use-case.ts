@@ -4,6 +4,7 @@ import { Email, EmailId } from '../../../domain/email/entities/email.entity';
 import { EmailAddress } from '../../../domain/email/value-objects/email-address';
 import { EmailContent } from '../../../domain/email/value-objects/email-content';
 import type { EmailDeliveryService } from '../services/email-delivery.service';
+import { IdGenerator } from '../../../shared/helpers/id-generator.helper';
 
 export interface SendEmailCommand {
   from: string;
@@ -23,7 +24,7 @@ export class SendEmailUseCase {
   ) {}
 
   async execute(command: SendEmailCommand): Promise<EmailId> {
-    const emailId: EmailId = { value: this.generateId() };
+    const emailId: EmailId = { value: IdGenerator.generateEmailId() };
     const from = new EmailAddress(command.from);
     const to = new EmailAddress(command.to);
     const content = new EmailContent(
@@ -47,9 +48,5 @@ export class SendEmailUseCase {
       await this.emailRepository.updateStatus(email);
       throw error;
     }
-  }
-
-  private generateId(): string {
-    return `email_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 }

@@ -2,9 +2,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import { EmailDeliveryService } from '../../application/email/services/email-delivery.service';
 import { Email } from '../../domain/email/entities/email.entity';
+import type { ConfigurationService } from '../../shared/config/configuration.service';
+import { EmailDeliveryException } from '../../domain/email/exceptions/email.exceptions';
 
 const sgMail = require('@sendgrid/mail');
 
@@ -13,12 +15,12 @@ export class SendGridEmailDeliveryService implements EmailDeliveryService {
   private readonly logger = new Logger(SendGridEmailDeliveryService.name);
   private totalEmailsSent: number = 0;
 
-  constructor() {
-    const apiKey = process.env.SENDGRID_API_KEY;
-    if (!apiKey) {
-      throw new Error('SENDGRID_API_KEY is not configured');
-    }
-    sgMail.setApiKey(apiKey);
+  constructor(
+    @Inject('ConfigurationService')
+    private readonly configService: ConfigurationService,
+  ) {
+    const emailConfig = this.configService.getEmailConfig();
+    sgMail.setApiKey(emailConfig.apiKey);
     this.logger.log('SendGrid Email Delivery Service initialized');
   }
 
@@ -63,7 +65,10 @@ export class SendGridEmailDeliveryService implements EmailDeliveryService {
 
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
-      throw new Error(`Failed to send email: ${errorMessage}`);
+      throw new EmailDeliveryException(
+        `Failed to send email: ${errorMessage}`,
+        error instanceof Error ? error : undefined,
+      );
     }
   }
 
