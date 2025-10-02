@@ -23,7 +23,6 @@ This application follows Domain-Driven Design principles with clear separation o
 - **Controllers**: Domain-driven email endpoints
 - **DTOs**: Request/response validation
 
-
 ## Features
 
 - ✅ **Domain-Driven Design Architecture**
