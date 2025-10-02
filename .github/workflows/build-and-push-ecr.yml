@@ -1,0 +1,55 @@
+name: build-and-push-ecr
+on:
+  push:
+    branches: [ main, production ]
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ca-central-1
+  ECR_REPO: email-worker
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 👉 Use your role
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::205661067201:role/GitHubECS-Deployer
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Who am I (sanity check)
+        run: aws sts get-caller-identity
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Ensure ECR repository exists
+        run: |
+          aws ecr describe-repositories --repository-names "$ECR_REPO" --region "$AWS_REGION" \
+          || aws ecr create-repository --repository-name "$ECR_REPO" --image-scanning-configuration scanOnPush=true --region "$AWS_REGION"
+
+      - name: Build & Push Docker image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          set -euo pipefail
+          IMAGE_SHA_TAG="${REGISTRY}/${ECR_REPO}:${GITHUB_SHA}"
+          docker build -t "${IMAGE_SHA_TAG}" .
+          docker push "${IMAGE_SHA_TAG}"
+
+          # Tag latest when pushing from main
+          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
+            LATEST_TAG="${REGISTRY}/${ECR_REPO}:latest"
+            docker tag "${IMAGE_SHA_TAG}" "${LATEST_TAG}"
+            docker push "${LATEST_TAG}"
+          fi
+
+          echo "IMAGE_URI=${IMAGE_SHA_TAG}" >> $GITHUB_ENV
