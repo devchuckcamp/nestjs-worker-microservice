@@ -19,6 +19,7 @@ This application follows Domain-Driven Design principles with clear separation o
 - **SendGrid Integration**: Email delivery implementation
 - **Repository Implementation**: In-memory email storage
 
+
 ### 🌐 **Presentation Layer** (`src/presentation/`)
 - **Controllers**: Domain-driven email endpoints
 - **DTOs**: Request/response validation
