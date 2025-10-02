@@ -10,6 +10,16 @@ export class AppController {
     private readonly emailDeliveryService: SendGridEmailDeliveryService,
   ) {}
 
+  @Get('health')
+  getHealth() {
+    return {
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      service: 'NestJS Email Worker',
+      version: process.env.npm_package_version || '0.0.1',
+    };
+  }
+
   @Get('queue/status')
   async getQueueStatus() {
     return this.appService.getQueueStatus();
