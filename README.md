@@ -6,21 +6,21 @@ A NestJS application implementing Domain-Driven Design (DDD) architecture for em
 
 This application follows Domain-Driven Design principles with clear separation of concerns:
 
-### 🏗️ **Domain Layer** (`src/domain/`)
+### **Domain Layer** (`src/domain/`)
 - **Email Entity**: Core business logic for email management
 - **Value Objects**: EmailAddress, EmailContent with validation
 - **Repository Interface**: Abstract email storage contract
 
-### 🎯 **Application Layer** (`src/application/`)
+###  **Application Layer** (`src/application/`)
 - **Use Cases**: SendEmailUseCase, QueueEmailUseCase
 - **Service Interfaces**: EmailDeliveryService interface
 
-### 🔧 **Infrastructure Layer** (`src/infrastructure/`)
+###  **Infrastructure Layer** (`src/infrastructure/`)
 - **SendGrid Integration**: Email delivery implementation
 - **Repository Implementation**: In-memory email storage
 
 
-### 🌐 **Presentation Layer** (`src/presentation/`)
+###  **Presentation Layer** (`src/presentation/`)
 - **Controllers**: Domain-driven email endpoints
 - **DTOs**: Request/response validation
 
@@ -40,9 +40,9 @@ This application follows Domain-Driven Design principles with clear separation o
 3. **SendGrid API Key** (see SENDGRID-SETUP.md)
 4. **Environment Configuration**: Copy `.env.example` to `.env` and configure your credentials
 
-> ⚠️ **Important**: Don't forget to copy `.env.example` to `.env` and add your SendGrid API key before starting the application!
+> **Important**: Don't forget to copy `.env.example` to `.env` and add your SendGrid API key before starting the application!
 
-## 🐳 Redis Setup with Docker
+## Redis Setup with Docker
 
 ### Quick Start with Docker Compose
 
@@ -78,7 +78,7 @@ volumes:
 
 ### Start Redis Services
 
-> **📝 Note**: These Docker services are for Redis only. You still need to configure your `.env` file for the NestJS application (see Prerequisites section above).
+> ** Note**: These Docker services are for Redis only. You still need to configure your `.env` file for the NestJS application (see Prerequisites section above).
 
 ```bash
 # Start Redis and Redis Insight
@@ -143,7 +143,7 @@ Access: http://localhost:8081
 - Download from official websites
 - Connect to `localhost:6379`
 
-## 🛠️ Development Tools
+## Development Tools
 
 ### Redis Development Script
 
@@ -207,9 +207,9 @@ FLUSHALL
 
 ### BullMQ Configuration Notes
 
-> **📝 Note**: The current BullMQ configuration uses `defaultJobOptions.removeOnComplete = false` specifically for **visualization purposes** in Redis Insight and other monitoring tools. This allows you to see completed jobs in the Redis interface for debugging and monitoring.
+> ** Note**: The current BullMQ configuration uses `defaultJobOptions.removeOnComplete = false` specifically for **visualization purposes** in Redis Insight and other monitoring tools. This allows you to see completed jobs in the Redis interface for debugging and monitoring.
 > 
-> **🔄 Next Update**: In the next version, completed job data will be saved to a database for permanent storage and analytics, allowing us to set `removeOnComplete = true` for better Redis memory management.
+> ** Next Update**: In the next version, completed job data will be saved to a database for permanent storage and analytics, allowing us to set `removeOnComplete = true` for better Redis memory management.
 
 ## Project setup
 
@@ -232,7 +232,7 @@ $ npm run start:prod
 
 ## API Endpoints
 
-### 📧 Send Email (Domain-Driven)
+###  Send Email (Domain-Driven)
 **POST** `/email/send`
 
 ```bash
@@ -247,14 +247,14 @@ curl -X POST http://localhost:3001/email/send \
   }'
 ```
 
-### 📊 Email Statistics
+###  Email Statistics
 **GET** `/email/stats`
 
 ```bash
 curl http://localhost:3001/email/stats
 ```
 
-### 🔍 Queue Status
+###  Queue Status
 **GET** `/queue/status`
 
 ```bash
@@ -289,7 +289,7 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## 🚀 Development Workflow
+##  Development Workflow
 
 ### Quick Start Development Setup
 
@@ -302,7 +302,7 @@ cd nest-worker
 # Run automated setup script (handles dependencies, .env, and Redis)
 ./setup.sh
 ```
-> **✅ The setup script automatically copies `.env.example` to `.env` for you!**
+> ** The setup script automatically copies `.env.example` to `.env` for you!**
 
 #### Option 2: Manual Setup
 
@@ -318,7 +318,7 @@ cd nest-worker
    ./redis-dev.sh start
    ```
 
-3. **Configure Environment** (⚠️ **Required**):
+3. **Configure Environment** ( **Required**):
    ```bash
    cp .env.example .env
    # Edit .env with your SendGrid credentials
