@@ -46,10 +46,19 @@ After setting up the environment variables, restart your application and test:
 # Restart the application
 npm run start:dev
 
+# Test the health endpoint first
+curl http://localhost:3000/health
+
 # Send a test email
-curl -X POST http://localhost:3001/email/welcome \
+curl -X POST http://localhost:3000/email/send \
   -H "Content-Type: application/json" \
-  -d '{"to": "<yourtestemail.com>", "name": "Santiago Granada"}'
+  -d '{
+    "from": "verifiedsengridsender@email.com",
+    "to": "yourtestemail@example.com",
+    "subject": "Test Email",
+    "textContent": "This is a test email from NestJS!",
+    "htmlContent": "<h1>Test Email</h1><p>This is a test email from NestJS!</p>"
+  }'
 ```
 
 ## 🔧 Current Configuration
@@ -62,12 +71,13 @@ Your application is now configured to use SendGrid with these features:
 - ✅ **100 free emails/day** with SendGrid free tier
 - ✅ **Easy scaling** for production use
 
-## 📧 Email Templates Available
+## 📧 Available Endpoints
 
-1. **Welcome Email**: `POST /email/welcome`
-2. **Notification Email**: `POST /email/notification`
-3. **Custom Email**: `POST /email/custom`
-4. **Delayed Email**: `POST /email/delayed`
+1. **Send Email**: `POST /email/send` - Send emails via domain-driven architecture
+2. **Queue Email**: `POST /email/queue` - Queue email for background processing
+3. **Email Statistics**: `GET /email/stats` - View sending statistics
+4. **Queue Status**: `GET /queue/status` - Monitor queue health
+5. **Health Check**: `GET /health` - Application health status
 
 ## 🚨 Important Notes
 
