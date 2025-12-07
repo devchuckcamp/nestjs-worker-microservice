@@ -1,8 +1,34 @@
 # NestJS Email Worker with Domain-Driven Design
 
-A NestJS application implementing Domain-Driven Design (DDD) architecture for email processing with queue management.
+[![NestJS](https://img.shields.io/badge/NestJS-v11.0.1-E0234E?logo=nestjs)](https://nestjs.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-v5.7.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![Redis](https://img.shields.io/badge/Redis-v7-DC382D?logo=redis)](https://redis.io/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)](https://www.docker.com/)
 
-## Architecture
+A production-ready NestJS microservice implementing Domain-Driven Design (DDD) and SOLID principles for scalable email processing with Redis-powered queue management.
+
+## 🎯 Overview
+
+This microservice provides a robust, enterprise-grade solution for email processing with:
+- **Domain-Driven Design** architecture for maintainable business logic
+- **SOLID Principles** implementation for clean, testable code
+- **Queue-based Processing** with BullMQ and Redis for reliability
+- **SendGrid Integration** for professional email delivery
+- **Docker Support** with AWS ECS deployment ready
+- **Type Safety** with full TypeScript coverage
+
+## 🛠️ Technology Stack
+
+- **Framework**: NestJS v11.0.1
+- **Language**: TypeScript v5.7.3
+- **Queue Management**: BullMQ v5.59.0 + Redis v7
+- **Email Service**: SendGrid v8.1.6
+- **Validation**: class-validator + class-transformer
+- **Testing**: Jest v30.0.0
+- **Container**: Docker (multi-stage Alpine-based)
+- **Cloud**: AWS ECS ready with health checks
+
+## 📐 Architecture
 
 This application follows Domain-Driven Design principles with clear separation of concerns:
 
@@ -232,11 +258,28 @@ $ npm run start:prod
 
 ## API Endpoints
 
-###  Send Email (Domain-Driven)
+### 🔥 Health Check
+**GET** `/health`
+
+```bash
+curl http://localhost:3000/health
+```
+
+Response:
+```json
+{
+  "status": "ok",
+  "timestamp": "2025-12-06T...",
+  "service": "NestJS Email Worker",
+  "version": "0.0.1"
+}
+```
+
+### 📧 Send Email (Domain-Driven)
 **POST** `/email/send`
 
 ```bash
-curl -X POST http://localhost:3001/email/send \
+curl -X POST http://localhost:3000/email/send \
   -H "Content-Type: application/json" \
   -d '{
     "from": "your-email@example.com",
@@ -247,18 +290,27 @@ curl -X POST http://localhost:3001/email/send \
   }'
 ```
 
-###  Email Statistics
+### 📊 Email Statistics
 **GET** `/email/stats`
 
 ```bash
-curl http://localhost:3001/email/stats
+curl http://localhost:3000/email/stats
 ```
 
-###  Queue Status
+Response:
+```json
+{
+  "totalEmailsSent": 42,
+  "timestamp": "2025-12-06T...",
+  "service": "Domain-Driven Email Service"
+}
+```
+
+### 📋 Queue Status
 **GET** `/queue/status`
 
 ```bash
-curl http://localhost:3001/queue/status
+curl http://localhost:3000/queue/status
 ```
 
 ## Testing
@@ -268,13 +320,42 @@ Use the included test script:
 ./test-queue-email.sh
 ```
 
-## Architecture Benefits
+## 🏗️ SOLID Principles Implementation
+
+This project strictly follows SOLID principles for maintainable, testable code:
+
+### Single Responsibility Principle (SRP)
+- **Helpers**: `IdGenerator` and `EmailValidator` handle specific utilities
+- **Use Cases**: Each use case has one clear responsibility
+- **Value Objects**: EmailAddress and EmailContent manage their own validation
+
+### Open/Closed Principle (OCP)
+- **Domain Exceptions**: Extensible hierarchy for new exception types
+- **Repository Pattern**: Easy to add new storage implementations
+- **Configuration Service**: Open for extension without modifying core logic
+
+### Liskov Substitution Principle (LSP)
+- **Repository Interfaces**: All implementations are interchangeable
+- **Service Interfaces**: Consistent contracts across implementations
+
+### Interface Segregation Principle (ISP)
+- **Segregated Repositories**: `EmailWriteRepository` and `EmailQueryRepository`
+- **Focused Interfaces**: Clients depend only on methods they use
+- **Configuration Interfaces**: Specific interfaces for email and app config
+
+### Dependency Inversion Principle (DIP)
+- **Abstraction-based Dependencies**: All services depend on interfaces
+- **Dependency Injection**: NestJS IoC container manages all dependencies
+- **Configuration Abstraction**: Environment access through `ConfigurationService`
+
+## 🎯 Architecture Benefits
 
 - **Clean Architecture**: Clear separation between domain, application, infrastructure, and presentation layers
 - **Testability**: Easily mockable dependencies and isolated business logic
 - **Maintainability**: Changes to external services don't affect business logic
 - **Scalability**: Queue-based processing with Redis and BullMQ
 - **Type Safety**: Full TypeScript coverage with strict validation
+- **SOLID Compliance**: Professional code quality following industry best practices
 
 ## Run tests
 
@@ -339,7 +420,7 @@ cd nest-worker
 1. **Check Queue Status**:
    ```bash
    ./redis-dev.sh queue-status
-   curl http://localhost:3001/queue/status
+   curl http://localhost:3000/queue/status
    ```
 
 2. **Monitor Queue Activity**:
